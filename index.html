@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>Travel First｜小旅伴家族心理測驗</title>
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<style>
+  :root{
+    --bg:#DFC740; --text:#133D50; --card:#ffffff; --muted:#345e72;
+    --ring:#133D50; --shadow:0 8px 24px rgba(0,0,0,.10);
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;background:var(--bg);color:var(--text);
+       font-family:"Noto Sans TC", ui-sans-serif, system-ui, -apple-system, "PingFang TC", "Microsoft JhengHei", Arial, sans-serif;}
+
+  .container{max-width:960px;margin:0 auto;padding:16px}
+  @media(min-width:768px){ .container{padding:24px} }
+
+  .card{background:var(--card);border-radius:18px;box-shadow:var(--shadow);padding:18px;margin-bottom:16px}
+  @media(min-width:768px){ .card{border-radius:20px;padding:24px;margin-bottom:20px} }
+
+  .btn{appearance:none;display:inline-flex;align-items:center;justify-content:center;gap:8px;
+       background:var(--text);color:var(--bg);border:0;border-radius:12px;
+       padding:12px 16px;font-weight:700;cursor:pointer;font-size:15px;line-height:1;text-decoration:none}
+  .btn:active{transform:translateY(1px)}
+  .btn.secondary{background:#fff;color:var(--text);border:2px solid var(--text)}
+  .btn.small{padding:8px 12px;font-size:13px}
+  .btn.big{padding:14px 20px;font-size:16px;border-radius:14px}
+
+  .center{display:flex;gap:8px;justify-content:center;align-items:center;flex-wrap:wrap}
+  .muted{color:var(--muted)}
+
+  .progress{height:8px;background:rgba(19,61,80,.2);border-radius:999px;overflow:hidden;margin:8px 0 12px}
+  .bar{height:100%;width:0;background:linear-gradient(90deg,#133D50,#0f3142)}
+
+  .qtitle{font-size:22px;font-weight:800;margin:2px 0 8px}
+  .qbody{font-size:16px;margin:0 0 6px}
+  @media(min-width:768px){ .qtitle{font-size:28px} .qbody{font-size:18px} }
+
+  .opt{display:flex;align-items:flex-start;gap:10px;border:1.5px solid rgba(19,61,80,.25);
+       border-radius:14px;padding:12px 14px;margin:10px 0;background:#fff;transition:.12s;touch-action:manipulation}
+  .opt:active{transform:scale(.998)}
+  .opt input{margin-top:2px;transform:scale(1.2)}
+  .opt-text{flex:1;font-size:16px}
+  .opt.selected{border-color:var(--ring)}
+
+  .navRow{display:flex;gap:8px;justify-content:space-between;margin-top:10px}
+  .navRow .btn{flex:1}
+  .navRow .btn.next{flex:2}
+
+  .result{display:none;text-align:center}
+  .result.show{display:block;animation:fade .35s ease}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none}}
+
+  .imgWrap{width:100%;display:flex;justify-content:center;margin-bottom:12px}
+  #charImg{height:auto;max-height:320px;width:auto;max-width:100%;object-fit:contain;border:none;background:transparent}
+
+  /* Videos row */
+  .videos{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px;justify-content:center}
+  .videoCard{background:#fff;border:1px solid rgba(19,61,80,.2);border-radius:14px;overflow:hidden;flex:0 0 clamp(240px,45vw,420px);scroll-snap-align:start;text-align:left}
+  .videoReason{font-size:12px;color:var(--muted);padding:8px 10px}
+  .videoThumb{display:block;position:relative;width:100%;aspect-ratio:16/9;overflow:hidden}
+  .videoThumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+
+  /* Partners row — always two-up, centered, no wrap; JS will resize widths */
+  .partners{display:flex;gap:12px;justify-content:center;align-items:stretch;flex-wrap:nowrap}
+  .partner{display:flex;flex-direction:column;align-items:center;gap:10px;
+           border:1px solid rgba(19,61,80,.2);border-radius:14px;padding:12px;background:#fff;
+           text-align:center}
+  .partner .thumb{width:140px;height:140px;border-radius:18px;overflow:hidden}
+  .partner .thumb img{width:100%;height:100%;object-fit:contain;display:block;background:transparent}
+  .partner .meta{font-size:14px}
+  .partner .meta .why{margin-top:4px;color:var(--muted)}
+
+  footer{margin:20px 0;text-align:center;color:var(--muted);font-size:12px}
+
+  .loading{display:none;text-align:center}
+  .loading.show{display:block;animation:fade .35s ease}
+  .spinner{width:50px;height:50px;border-radius:50%;border:4px solid rgba(19,61,80,.25);border-top-color:#133D50;margin:10px auto 12px;animation:spin 1s linear infinite}
+  @keyframes spin{to{transform:rotate(360deg)}}
+
+  /* Promo (no frame now) */
+  .promo{background:transparent;border:0;border-radius:0;padding:0;display:inline-flex;align-items:center;gap:10px}
+  .promo strong{font-size:16px}
+  .promo .btn{font-size:14px;padding:10px 14px}
+  @media(min-width:768px){ .promo strong{font-size:18px} .promo .btn{font-size:15px} }
+</style>
+</head>
+<body>
+<div class="container">
+  <div class="card" id="intro">
+    <img src="https://static.wixstatic.com/media/ba9378_6cf0a9546a4540848bfb508a063f5e4d~mv2.png" alt="Travel First Banner" style="width:100%;height:auto;border-radius:12px;margin-bottom:10px" />
+    <p class="muted" style="white-space:pre-line">
+那是一個清晨，機場的廣播正播放著熟悉的旋律。
+你拉著行李，抬頭望向出發大廳的航班螢幕，
+上面閃爍著一行奇妙的字樣——「Travel First：前往未知的旅程」
+
+你深吸一口氣，準備登機。
+五位各有個性的旅人正等著你——
+感性、理性、熱血、可靠、與放空。
+他們齊聲說：「跟我們一起去旅行吧！」
+
+這趟旅程將帶你經歷美好時光、冒險與驚喜。
+準備好了嗎？登機口開啟！</p>
+    <p class="muted" style="text-align:center;margin-top:6px"><em>*本測驗一共12題，作答約需3分鐘*</em></p>
+    <div class="center" style="margin-top:8px"><button class="btn big" id="startBtn">準備出發</button></div>
+  </div>
+
+  <div class="card" id="quiz" style="display:none">
+    <div class="progress"><div class="bar" id="bar"></div></div>
+    <div id="questionContainer"></div>
+    <div class="navRow">
+      <button class="btn secondary" id="prevBtn">上一題</button>
+      <button class="btn next" id="nextBtn">下一題</button>
+    </div>
+  </div>
+
+  <div class="card loading" id="loading">
+    <img src="https://static.wixstatic.com/media/ba9378_0dcab262076146d0be483ee81333fe6a~mv2.png" alt="角色剪影" style="width:auto;max-height:160px;margin:6px auto 0;display:block" />
+    <div class="spinner"></div>
+    <p style="white-space:pre-line">
+廣播響起——
+「請旅客繫好安全帶，您屬於哪種旅伴類型呢？我們即將揭曉。」
+你望著窗外的雲海，回想起剛剛的每一次選擇。
+是即興的靈感？還是精準的計畫？
+每個答案，都是你旅行靈魂的線索。
+系統正在比對登機紀錄中……
+——準備迎接屬於你的旅伴人格吧！
+    </p>
+  </div>
+
+  <div class="card result" id="result">
+    <div id="resContent" style="text-align:center">
+      <div class="imgWrap"><img id="charImg" alt="角色插圖" /></div>
+      <h2 id="title"></h2>
+      <p class="muted" id="subtitle"></p>
+      <p id="quote"></p>
+
+      <h2 id="vidsTitle" style="margin-top:16px">這些影片最適合你</h2>
+      <div class="videos" id="videos"></div>
+
+      <h2 id="partnersTitle" style="margin:16px 0 8px">你適合一起旅行的旅伴</h2>
+      <div class="partners" id="partners"></div>
+    </div>
+
+    <div class="center" style="margin-top:16px">
+      <button class="btn big" id="shareLine">LINE</button>
+      <button class="btn big" id="shareFB">Facebook</button>
+      <button class="btn big" id="shareThreads">Threads</button>
+      <button class="btn big" id="exportBtn">匯出圖片</button>
+    </div>
+    <div class="center" style="margin-top:8px">
+      <button class="btn secondary big" id="retryBtn">重新作答</button>
+    </div>
+
+    <div class="center" style="margin-top:18px">
+      <div class="promo">
+        <strong>我們是 旅行優先 TRAVEL FIRST —— 帶著小旅伴，一起旅行！</strong>
+        <a class="btn" id="ytBtn" href="https://www.youtube.com/c/TRAVELFIRST" target="_blank" rel="noopener">馬上觀看旅行優先頻道</a>
+      </div>
+    </div>
+  </div>
+
+  <footer>© 旅行優先TRAVEL FIRST</footer>
+</div>
+
+<script>
+// ===== 題庫（已移除括弧角色名） =====
+const questions=[
+  {title:'Q1你準備和一群朋友去旅行...',body:'這次的團體旅行大家分工明確。你在團隊裡通常是哪種角色？',opts:['給大家能量、幫大家拍美照的氣氛王','帶頭衝的人，負責決定方向與行程','靈感來源，提議新點子的自由派','總是慢半拍，悠閒跟在後面欣賞風景','那個默默補位、幫忙拿東西、照顧大家的小幫手']},
+  {title:'Q2大家興高采烈地準備規劃行程...',body:'新的一趟旅程要開始啦！安排行程時，你最重視的是？',opts:['餐食住宿是否讓大家能玩得舒適滿足','是否新奇、有挑戰性','風景、氛圍與故事感','交通方不方便、時間安排是否順利','天氣宜人、適合放空休息']},
+  {title:'Q3出發前的夜晚...',body:'明天就要出發啦！你坐在床邊，房間裡堆滿了行李和資料。這時候的你，通常在做什麼？',opts:['除了收好自己的行李外，還幫大家準備防曬乳、藥品等貼心小物','看著行程幻想旅程的畫面、期待和旅伴的歡樂時光','調整相機或蒐集IG上的拍照角度：「明天一定要拍好多張好照片！」','反覆檢查行李和行程表，確保一切無誤','邊收行李邊看劇，想到什麼塞什麼，沒帶到的當地再買就好']},
+  {title:'Q4抵達目的地的那一刻...',body:'飛機緩緩降落，你終於踏上這片期待已久的土地。你的第一個念頭是什麼？',opts:['幫大家拿行李、引導方向、確認集合點','找個高點拍下整座城市的景色','馬上衝去最想去的景點，不想浪費時間','先確認住宿、交通等細節，安排好再放鬆','先找地方坐下來喝杯咖啡、慢慢感受氣氛']},
+  {title:'Q5突發狀況來了...',body:'正當旅程順利進行時，卻突然下起大雨、交通又塞爆！旅伴們顯得很失望，這時候的你會？',opts:['打開音樂、戴上耳機：「不趕行程也挺不錯嘛～」','拍下這個烏龍瞬間，變成有趣回憶','冷靜分析狀況，溫柔地安撫旅伴並尋找可替代的行程','拿出預先準備的行程與地圖，重新核對調整計畫','把它當作新的冒險開始：「沒關係啦～下雨也有下雨的樂趣！」']},
+  {title:'Q6行程臨時更動...',body:'原訂的景點臨時關門，旅伴提議改去別的地方。你會怎麼反應？',opts:['沒差啊～你高興我隨意。','我幫你查查有沒有拍起來更漂亮的地方！','改行程？那交通和時間怎麼辦？','沒關係，我來幫忙看要怎麼調整比較順。','好啊！說不定更好玩！']},
+  {title:'Q7吃飯時間到了...',body:'玩了一整天，大家都餓壞了。面對琳瑯滿目的餐廳，你最在意的是？',opts:['當地特色與拍照氛圍','食物適合大家胃口、有沒有吃飽','找評價最高、行程動線最順的店','想吃什麼就吃什麼，隨便都好','哪間最有冒險感——路邊小吃攤也可以！']},
+  {title:'Q8回到住宿的夜晚...',body:'一天的行程結束，你們終於回到飯店。放下行李後，你會先做什麼？',opts:['站在陽台吹風，看著城市燈火發呆','拿起相機拍下房間和夜景，順便整理今天的照片','幫大家分配床位、插座、拿出洗衣袋','打開手機，查看明天的天氣與路線','直接撲上床、秒睡']},
+  {title:'Q9你心中的完美旅程...',body:'夜晚結束了一天的行程，旅伴們在聊天。有人問：「對你來說，完美的旅行是什麼？」',opts:['沒有壓力、走到哪享受哪','拍到最美的瞬間、留下回憶','一切都按照計畫順利進行','充滿驚喜與自由的節奏','大家平安開心地玩到最後']},
+  {title:'Q10回程的飛機上...',body:'旅行即將結束，你望著窗外的雲海。腦中浮現的畫面是？',opts:['和旅伴一起大笑的畫面','陽光下放空的那段安靜時光','在陌生街頭迷路後意外發現的驚喜','成功處理突發狀況讓旅程順利的成就感','幫大家把伴手禮完美塞進行李的那一刻']},
+  {title:'Q11回到家的晚上...',body:'結束旅程，你拖著行李回到熟悉的家。放下包包的那一刻，你通常會？',opts:['把伴手禮一份份包好分給朋友','行李先放著，等明天再說','邊拆紀念品邊回味旅程：「好想再去一次！」','立刻把行李整理乾淨、分類好','意猶未盡，馬上開始查下一次要去哪']},
+  {title:'Q12被委任規劃下一趟旅行...',body:'旅伴看著你說：「下次的旅行交給你安排吧！」你會？',opts:['幫大家建群組，開始分工討論交通和預算','拿出 IG 網美的照片：「這個地方很美、拍起來很漂亮，去這裡好不好？」','打開地圖，笑著說：「這裡！感覺不錯，就這裡吧～」','在沙發上打著呵欠：「都可以啦～你們先討論，我睡醒再決定要不要去。」','拿出筆電，邊敲鍵盤邊說：「等我查完資料再給你一份完整行程。」']}
+];
+
+const mapping=[
+  ['卡美拉','帕斯','旅先森','皮羅','卡邦'],
+  ['卡邦','旅先森','卡美拉','帕斯','皮羅'],
+  ['卡邦','旅先森','卡美拉','帕斯','皮羅'],
+  ['卡邦','卡美拉','旅先森','帕斯','皮羅'],
+  ['皮羅','卡美拉','卡邦','帕斯','旅先森'],
+  ['皮羅','卡美拉','帕斯','卡邦','旅先森'],
+  ['卡美拉','卡邦','帕斯','皮羅','旅先森'],
+  ['旅先森','卡美拉','卡邦','帕斯','皮羅'],
+  ['皮羅','卡美拉','帕斯','旅先森','卡邦'],
+  ['卡美拉','皮羅','旅先森','帕斯','卡邦'],
+  ['卡邦','皮羅','卡美拉','帕斯','旅先森'],
+  ['卡邦','卡美拉','旅先森','皮羅','帕斯']
+];
+
+const roleImg={
+  "旅先森":"https://static.wixstatic.com/media/ba9378_df2b195732864ba8a5967b104923e670~mv2.png",
+  "卡邦":"https://static.wixstatic.com/media/ba9378_8138a1a084284b93a53c2a42cb458c74~mv2.png",
+  "卡美拉":"https://static.wixstatic.com/media/ba9378_afef00400707435886277313ef6dbc4b~mv2.png",
+  "帕斯":"https://static.wixstatic.com/media/ba9378_266468855fb8463b916f590ef861a508~mv2.png",
+  "皮羅":"https://static.wixstatic.com/media/ba9378_86ced82974b945ec95be62edaf0328d4~mv2.png",
+};
+
+const weights={"旅先森":{E:1,N:1,F:1,P:1},"帕斯":{I:1,S:1,T:1,J:1},"卡美拉":{E:1,N:1,F:1,P:1},"卡邦":{I:1,S:1,T:1,J:1},"皮羅":{I:1,S:1,F:1,P:1}};
+const role2mbti={"旅先森":["ENFP","ENTP","ESTP"],"帕斯":["INTJ","ENTJ","ISTJ","ESTJ"],"卡邦":["ISFJ","ESFJ","INTP","ISTP"],"卡美拉":["ENFJ","ESFP","INFJ"],"皮羅":["ISFP","INFP"]};
+const resultMeta={
+  ENFP:{role:"旅先森",name:"靈魂探險家",desc:"熱血感性，憑直覺探索世界。",quote:"「世界這麼大，我想去轉一轉。」"},
+  ENTP:{role:"旅先森",name:"創意行動者",desc:"靈光乍現，創意與行動並重。",quote:"「世界這麼大，我想去轉一轉。」"},
+  ESTP:{role:"旅先森",name:"即興冒險家",desc:"行動派，熱愛速度與刺激。",quote:"「世界這麼大，我想去轉一轉。」"},
+  INTJ:{role:"帕斯",name:"策略導演",desc:"腦中有藍圖、思路縝密。",quote:"「沒計畫的旅程不叫旅行，叫混亂。」"},
+  ENTJ:{role:"帕斯",name:"決策領航員",desc:"領導氣場強，擅長掌控全局。",quote:"「沒計畫的旅程不叫旅行，叫混亂。」"},
+  ISTJ:{role:"帕斯",name:"規劃執行者",desc:"有條理、重秩序、效率控。",quote:"「沒計畫的旅程不叫旅行，叫混亂。」"},
+  ESTJ:{role:"帕斯",name:"領隊控制塔",desc:"行動派領導者，務實果斷。",quote:"「沒計畫的旅程不叫旅行，叫混亂。」"},
+  ISFJ:{role:"卡邦",name:"貼心照顧者",desc:"細膩體貼，可靠又溫暖。",quote:"「沒關係，你儘管買！再重我都幫你扛！」"},
+  ESFJ:{role:"卡邦",name:"社交暖心者",desc:"樂於照顧大家、營造溫度。",quote:"「沒關係，你儘管買！再重我都幫你扛！」"},
+  INTP:{role:"卡邦",name:"分析修理師",desc:"喜歡研究、動手解決問題。",quote:"「沒關係，你儘管買！再重我都幫你扛！」"},
+  ISTP:{role:"卡邦",name:"實作解決者",desc:"務實沉著、最會修東西的旅伴。",quote:"「沒關係，你儘管買！再重我都幫你扛！」"},
+  ENFJ:{role:"卡美拉",name:"共感導演",desc:"溫柔熱情、情緒共鳴力強。",quote:"「哥拍的不是照片，是回憶。」"},
+  ESFP:{role:"卡美拉",name:"現場氣氛王",desc:"活潑開朗，感性又有魅力。",quote:"「哥拍的不是照片，是回憶。」"},
+  INFJ:{role:"卡美拉",name:"理想觀景者",desc:"安靜深情、觀察入微。",quote:"「哥拍的不是照片，是回憶。」"},
+  ISFP:{role:"皮羅",name:"溫柔放空家",desc:"溫柔放鬆、重感受的旅人。",quote:"「休息，也是旅行的一部分。」"},
+  INFP:{role:"皮羅",name:"夢想觀察家",desc:"內斂浪漫，旅行是心靈療癒。",quote:"「休息，也是旅行的一部分。」"}
+};
+
+const partnersByMBTI={
+  ENFP:[{code:"ISTJ",why:"理性與秩序讓你的靈感更落地。"},{code:"ENFJ",why:"情感共鳴，旅途故事感滿分。"}],
+  ENTP:[{code:"ISTP",why:"行動與修理支援，創意不怕卡關。"},{code:"ESFP",why:"現場靈感互拋，氣氛永不冷場。"}],
+  ESTP:[{code:"INTJ",why:"策略規劃搭即興行動，一動一靜剛剛好。"},{code:"ISFP",why:"你衝他穩，節奏被溫柔梳理。"}],
+  INTJ:[{code:"ENFP",why:"靈感點燃你的藍圖，計畫更有生命力。"},{code:"ISTP",why:"策略＋實作，硬核高效組合。"}],
+  ENTJ:[{code:"ENFJ",why:"領導搭共感，團隊氛圍最穩定。"},{code:"ESFJ",why:"細膩照顧，使你的決策更順暢。"}],
+  ISTJ:[{code:"ESTP",why:"規劃派與行動派互補，效率與刺激兼具。"},{code:"ISFJ",why:"穩定與溫柔並行，讓旅程更舒心。"}],
+  ESTJ:[{code:"ESFP",why:"你掌節奏，他帶歡笑與美照。"},{code:"INFP",why:"剛柔並濟，嚴謹與浪漫互調。"}],
+  ISFJ:[{code:"ENTP",why:"你給安心，他給新意，旅程更精彩。"},{code:"INFP",why:"溫柔共鳴，療癒系同行。"}],
+  ESFJ:[{code:"ENTJ",why:"領導＋照顧，團隊運作最流暢。"},{code:"INFJ",why:"情感理解深，步調和諧。"}],
+  INTP:[{code:"ESTP",why:"動腦＋動手＋敢衝，任務通關率高。"},{code:"ISTJ",why:"條理與研究互補，細節到位。"}],
+  ISTP:[{code:"ENFJ",why:"冷靜配共感，效率與溫度兼備。"},{code:"INTJ",why:"實作＋策略，解題如行雲流水。"}],
+  ENFJ:[{code:"ISTP",why:"你引導情緒，他解決問題，雙保險。"},{code:"ENFP",why:"靈感與溫暖並進，火花十足。"}],
+  ESFP:[{code:"ESTJ",why:"他管節奏，你管氣氛，旅途零冷場。"},{code:"ISFP",why:"自在合拍，感受派默契滿分。"}],
+  INFJ:[{code:"ESFJ",why:"被理解、被照顧，創作更流動。"},{code:"ENTP",why:"安靜與活力互補，故事層次更豐富。"}],
+  ISFP:[{code:"ENTJ",why:"方向有人管，你專心享受風景。"},{code:"ESFP",why:"溫柔＋熱情，照片與回憶都美。"}],
+  INFP:[{code:"ENFP",why:"被冒險喚醒的浪漫靈魂。"},{code:"ISFJ",why:"細膩照顧，安心且療癒。"}]
+};
+
+// ===== 互動 =====
+const intro=document.getElementById("intro");
+const quiz=document.getElementById("quiz");
+const qWrap=document.getElementById("questionContainer");
+const bar=document.getElementById("bar");
+const btnPrev=document.getElementById("prevBtn");
+const btnNext=document.getElementById("nextBtn");
+const loading=document.getElementById("loading");
+const result=document.getElementById("result");
+
+let idx=0;
+const picks=Array(questions.length).fill(null);
+
+function firstUnanswered(){for(let i=0;i<questions.length;i++) if(picks[i]==null) return i; return -1;}
+
+function renderQuestion(){
+  const q=questions[idx];
+  qWrap.innerHTML=`<div class="qtitle">${q.title}</div>
+                   <div class="qbody">${q.body}</div>`
+    + q.opts.map((t,i)=>{
+      const checked=(picks[idx]===i)?'checked':'';
+      return `<label class="opt ${checked?'selected':''}"><input type="radio" name="q${idx}" value="${i}" ${checked}> <div class="opt-text">${t}</div></label>`;
+    }).join("");
+
+  qWrap.querySelectorAll(`input[name="q${idx}"]`).forEach(r=>{
+    r.addEventListener("change",e=>{
+      picks[idx]=parseInt(e.target.value,10);
+      qWrap.querySelectorAll(".opt").forEach(o=>o.classList.remove("selected"));
+      e.target.closest(".opt").classList.add("selected");
+      setTimeout(()=>{
+        const nextMissing=firstUnanswered();
+        if(idx<questions.length-1){
+          idx=Math.max(idx+1, nextMissing===-1?idx+1:nextMissing);
+          renderQuestion();
+        }else{
+          if(nextMissing!==-1){ idx=nextMissing; renderQuestion(); }
+          else { goLoadingThenResult(); }
+        }
+      },120);
+    },{passive:true});
+  });
+
+  btnPrev.disabled=(idx===0);
+  btnNext.textContent=(idx===questions.length-1)?"查看結果":"下一題";
+  bar.style.width=((idx)/questions.length*100)+"%";
+  window.scrollTo({top:quiz.offsetTop-8,behavior:'smooth'});
+}
+
+function goLoadingThenResult(){
+  const miss=firstUnanswered();
+  if(miss!==-1){ alert("還有題目尚未作答，將帶你回到未完成的題目。"); idx=miss; renderQuestion(); return; }
+  quiz.style.display='none';
+  loading.classList.add('show');
+  setTimeout(()=>{
+    try{ computeAndShow(); loading.classList.remove('show'); }
+    catch(err){ console.error(err); loading.classList.remove('show'); alert("結果計算出了小問題，請再試一次。"); location.reload(); }
+  },4000);
+}
+
+document.getElementById("startBtn").onclick=()=>{ intro.style.display='none'; quiz.style.display='block'; idx=0; renderQuestion(); };
+btnPrev.onclick=()=>{ if(idx>0){ idx--; renderQuestion(); } };
+btnNext.onclick=()=>{
+  if(picks[idx]==null){ alert("請先選擇一個選項"); return; }
+  const nextMissing=firstUnanswered();
+  if(idx<questions.length-1){ idx++; if(nextMissing!==-1 && nextMissing>idx) idx=nextMissing; renderQuestion(); }
+  else{ if(nextMissing!==-1){ idx=nextMissing; renderQuestion(); } else { goLoadingThenResult(); } }
+};
+
+function computeAndShow(){
+  const roleScore={旅先森:0,帕斯:0,卡美拉:0,卡邦:0,皮羅:0};
+  const dim={E:0,I:0,N:0,S:0,T:0,F:0,J:0,P:0};
+
+  for(let i=0;i<questions.length;i++){
+    const opt=picks[i]; if(opt==null) continue;
+    const role=mapping[i][opt]; if(!role) continue;
+    roleScore[role]++; const w=weights[role]||{}; for(const k in w){ dim[k]=(dim[k]||0)+w[k]; }
+  }
+
+  const mainRole=Object.entries(roleScore).sort((a,b)=>b[1]-a[1])[0][0];
+  const mbtiRaw=(dim.E>=dim.I?'E':'I')+(dim.N>=dim.S?'N':'S')+(dim.T>=dim.F?'T':'F')+(dim.J>=dim.P?'J':'P');
+  const allow=role2mbti[mainRole]||["ENFP","INTJ","ISFJ","ENFJ","ISFP"];
+  const mbti=allow.includes(mbtiRaw)?mbtiRaw:allow.slice().sort((a,b)=>hamming(a,mbtiRaw)-hamming(b,mbtiRaw))[0];
+  showResult(mainRole,mainRole,mbti);
+}
+
+function hamming(a,b){let d=0;for(let i=0;i<4;i++){ if(a[i]!==b[i]) d++; } return d; }
+
+function showResult(role,roleForVideos,mbti){
+  const meta=resultMeta[mbti];
+  document.getElementById("title").textContent=`${meta.role} × ${mbti}｜${meta.name}`;
+  document.getElementById("subtitle").textContent=meta.desc;
+  document.getElementById("quote").textContent=meta.quote;
+
+  const mainImg=document.getElementById("charImg");
+  mainImg.src=roleImg[meta.role]||"";
+  mainImg.style.border="none"; mainImg.style.background="transparent";
+
+  const videosMap={
+    "旅先森":[{id:"2EWjKIjkbs8",url:"https://youtu.be/2EWjKIjkbs8",reason:"東京夜生活去哪裡？這邊絕對可以大開你的眼界"},
+              {id:"TGGCPzwE3ZI",url:"https://youtu.be/TGGCPzwE3ZI",reason:"喜歡冒險？印度絕對可以為你的冒險日記寫下精彩的一頁"}],
+    "卡邦":[{id:"BuVKTJ_sJvc",url:"https://youtu.be/BuVKTJ_sJvc",reason:"肉肉絕對是身強體壯的卡邦不可或缺的蛋白質來源"},
+            {id:"PoTYEZZDb2A",url:"https://youtu.be/PoTYEZZDb2A",reason:"吃飽才能頭好壯壯，末日前必吃這三家"}],
+    "卡美拉":[{id:"xrKUbp1VnQM",url:"https://youtu.be/xrKUbp1VnQM",reason:"到底誰說金鱗湖很無聊的？美到爆了好嗎！"},
+             {id:"t9q4EMP-7zo",url:"https://youtu.be/t9q4EMP-7zo",reason:"要比美？泰姬瑪哈陵絕對是網美此生必訪的景點之一"}],
+    "帕斯":[{id:"8oQZqFzb9pE",url:"https://youtu.be/8oQZqFzb9pE",reason:"到迪士尼「戰鬥」絕對需要詳細的規劃"},
+            {id:"NbwlVmH3S74",url:"https://youtu.be/NbwlVmH3S74",reason:"這樣規劃路線購買伴手禮，又爽又順暢"}],
+    "皮羅":[{id:"OEgDW0wpEAM",url:"https://youtu.be/OEgDW0wpEAM",reason:"大阪城市渡假首選飯店，整天在裡面Chill就好！"},
+            {id:"SAOhPNSst98",url:"https://youtu.be/SAOhPNSst98",reason:"曼谷的住宿一家比一家厲害"}]
+  };
+  const vids=videosMap[roleForVideos]||[];
+  const vidsEl=document.getElementById("videos"); vidsEl.innerHTML="";
+  vids.forEach(v=>{
+    const el=document.createElement("div");
+    el.className="videoCard";
+    el.innerHTML=`<div class="videoReason">${v.reason}</div>
+                  <a class="videoThumb" href="${v.url}" target="_blank" rel="noopener">
+                    <img src="https://img.youtube.com/vi/${v.id}/hqdefault.jpg" alt="推薦影片縮圖">
+                  </a>`;
+    vidsEl.appendChild(el);
+  });
+
+  const partners=({
+    ENFP:[{code:"ISTJ",why:"理性與秩序讓你的靈感更落地。"}, {code:"ENFJ",why:"情感共鳴，旅途故事感滿分。"}],
+    ENTP:[{code:"ISTP",why:"行動與修理支援，創意不怕卡關。"}, {code:"ESFP",why:"現場靈感互拋，氣氛永不冷場。"}],
+    ESTP:[{code:"INTJ",why:"策略規劃搭即興行動，一動一靜剛剛好。"}, {code:"ISFP",why:"你衝他穩，節奏被溫柔梳理。"}],
+    INTJ:[{code:"ENFP",why:"靈感點燃你的藍圖，計畫更有生命力。"}, {code:"ISTP",why:"策略＋實作，硬核高效組合。"}],
+    ENTJ:[{code:"ENFJ",why:"領導搭共感，團隊氛圍最穩定。"}, {code:"ESFJ",why:"細膩照顧，使你的決策更順暢。"}],
+    ISTJ:[{code:"ESTP",why:"規劃派與行動派互補，效率與刺激兼具。"}, {code:"ISFJ",why:"穩定與溫柔並行，讓旅程更舒心。"}],
+    ESTJ:[{code:"ESFP",why:"你掌節奏，他帶歡笑與美照。"}, {code:"INFP",why:"剛柔並濟，嚴謹與浪漫互調。"}],
+    ISFJ:[{code:"ENTP",why:"你給安心，他給新意，旅程更精彩。"}, {code:"INFP",why:"溫柔共鳴，療癒系同行。"}],
+    ESFJ:[{code:"ENTJ",why:"領導＋照顧，團隊運作最流暢。"}, {code:"INFJ",why:"情感理解深，步調和諧。"}],
+    INTP:[{code:"ESTP",why:"動腦＋動手＋敢衝，任務通關率高。"}, {code:"ISTJ",why:"條理與研究互補，細節到位。"}],
+    ISTP:[{code:"ENFJ",why:"冷靜配共感，效率與溫度兼備。"}, {code:"INTJ",why:"實作＋策略，解題如行雲流水。"}],
+    ENFJ:[{code:"ISTP",why:"你引導情緒，他解決問題，雙保險。"}, {code:"ENFP",why:"靈感與溫暖並進，火花十足。"}],
+    ESFP:[{code:"ESTJ",why:"他管節奏，你管氣氛，旅途零冷場。"}, {code:"ISFP",why:"自在合拍，感受派默契滿分。"}],
+    INFJ:[{code:"ESFJ",why:"被理解、被照顧，創作更流動。"}, {code:"ENTP",why:"安靜與活力互補，故事層次更豐富。"}],
+    ISFP:[{code:"ENTJ",why:"方向有人管，你專心享受風景。"}, {code:"ESFP",why:"溫柔＋熱情，照片與回憶都美。"}],
+    INFP:[{code:"ENFP",why:"被冒險喚醒的浪漫靈魂。"}, {code:"ISFJ",why:"細膩照顧，安心且療癒。"}]
+  })[mbti]||[];
+
+  const partnersEl=document.getElementById("partners"); partnersEl.innerHTML="";
+  partners.forEach(p=>{
+    const m=resultMeta[p.code];
+    const el=document.createElement("div");
+    el.className="partner";
+    const imgUrl=roleImg[m.role]||"";
+    el.innerHTML=`<div class="thumb"><img src="${imgUrl}" alt="${m.role}"></div>
+                  <div class="meta"><strong>${m.role} × ${p.code}｜${m.name}</strong>
+                    <div class="why">${p.why}</div>
+                  </div>`;
+    partnersEl.appendChild(el);
+  });
+
+  // 確保兩張卡片「橫向並排、不換行」，並自動縮放寬度以適配容器
+  resizePartners();
+  window.addEventListener('resize', resizePartners);
+
+  document.getElementById("loading").classList.remove("show");
+  result.classList.add("show");
+  window.scrollTo({top:result.offsetTop-8,behavior:'smooth'});
+}
+
+// 動態計算兩卡寬度以避免換行（含 gap）
+function resizePartners(){
+  const el=document.getElementById('partners');
+  const cards=[...el.children];
+  if(cards.length!==2) return;
+  const gap=12;
+  const innerWidth=el.clientWidth - gap; // 兩張卡唯一的間距
+  const each=Math.max(210, innerWidth/2); // 不小於210
+  cards.forEach(c=>{
+    c.style.width=each+'px';
+    c.style.flex='0 0 '+each+'px';
+  });
+}
+
+document.getElementById("retryBtn").onclick=()=>location.reload();
+document.getElementById("exportBtn").onclick=()=>{
+  html2canvas(document.getElementById("resContent"), {backgroundColor:"#ffffff", scale:2}).then(canvas=>{
+    const a=document.createElement("a"); a.download="TravelFirst_Result.png"; a.href=canvas.toDataURL(); a.click();
+  });
+};
+const shareUrl="https://travelfirst.tw/personality";
+function enc(s){return encodeURIComponent(s);}
+function shareText(){
+  const title=document.getElementById("title").textContent;
+  return `我的旅行人格是「${title}」！你是哪種小旅伴呢？適合和你一起旅行的小旅伴是誰呢？趕快來測試看看吧！ ${shareUrl}`;
+}
+document.getElementById("shareLine").onclick=()=>window.open(`https://line.me/R/msg/text/?${enc(shareText())}`,"_blank");
+document.getElementById("shareFB").onclick=()=>window.open(`https://www.facebook.com/sharer/sharer.php?u=${enc(shareUrl)}&quote=${enc(shareText())}`,"_blank");
+document.getElementById("shareThreads").onclick=()=>window.open(`https://www.threads.net/intent/post?text=${enc(shareText())}`,"_blank");
+</script>
+</body>
+</html>
