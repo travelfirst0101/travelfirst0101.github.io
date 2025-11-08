@@ -200,6 +200,28 @@
 #exportBtn{ display:none !important; }
 
 </style>
+
+<style>
+/* === Responsive: keep giveaway + YouTube buttons on one row === */
+#shareRow{ flex-wrap: nowrap; }
+#shareRow .btn{ white-space: nowrap; }
+@media (max-width: 480px){
+  #shareRow .btn{ font-size:14px; padding:10px 12px; border-radius:12px; }
+  #shareRow #ytBtn img{ height:1em; width:auto; }
+}
+@media (max-width: 360px){
+  #shareRow .btn{ font-size:13px; padding:8px 10px; }
+}
+</style>
+
+
+<style>
+/* Hide bubble label on mobile when opened */
+@media (max-width: 600px){
+  #tf-gw.open .tf-gw__bubble{ display:none !important; }
+}
+</style>
+
 </head>
 <body>
 <div id="overlay" class="overlay">
@@ -311,6 +333,20 @@
       <h2 id="partnersTitle" style="margin:16px 0 8px">你適合一起旅行的旅伴</h2>
       <div class="partners" id="partners"></div>
     </div>
+    <div class="center" id="shareRow" style="margin-top:12px">
+      <button class="btn secondary" id="shareGiveawayBtn" style="background:#e02424;color:#fff;border:0">分享結果參加抽獎</button><a class="btn" id="ytBtn" href="https://www.youtube.com/c/TRAVELFIRST" target="_blank" rel="noopener" style="margin-left:10px; display:inline-flex; align-items:center; gap:6px;">
+  <span>觀看旅行優先</span><img src="https://static.wixstatic.com/media/ba9378_38c1d3e665ef460fba9b4339ae00a233~mv2.png" alt="" style="height:1.1em; width:auto; vertical-align:middle;">
+</a>
+    </div>
+<div class="center" id="stickersRow" style="margin-top:10px">
+  <a class="btn secondary" id="dlStickersBtn" href="https://store.line.me/stickershop/product/31976517/zh-Hant?utm_source=gnsh_stickerDetail"" style="display:inline-flex; align-items:center; gap:6px;" target="_blank" rel="external noopener noreferrer" onclick="(function(e){try{var a=e.currentTarget||this; var url=a.href;var iOS=/iP(hone|ad|od)/.test(navigator.userAgent);var stand=(window.navigator.standalone===true)||((window.matchMedia&&matchMedia('(display-mode: standalone)').matches));if(iOS){var t=document.createElement('a'); t.href=url; t.target='_blank'; t.rel='external noopener noreferrer';document.body.appendChild(t); t.click(); setTimeout(function(){try{t.remove();}catch(_e){}},0);e.preventDefault(); e.stopPropagation(); return false;}var w=window.open(url,'_blank','noopener');if(w&& !w.closed){ e.preventDefault(); e.stopPropagation(); return false; }var ta=document.createElement('a'); ta.href=url; ta.target='_blank'; ta.rel='noopener noreferrer';document.body.appendChild(ta); ta.click(); try{ta.remove();}catch(_e){}e.preventDefault(); e.stopPropagation(); return false; }catch(err){}})(event)">
+    <span>下載小旅伴LINE貼圖</span>
+    <img src="https://static.wixstatic.com/media/ba9378_b31700c2894f4cbba9e2c0048ed232ba~mv2.png" alt="" style="height:1.1em; width:auto; vertical-align:middle;">
+  </a>
+</div>
+
+
+    
 
     <div class="shareBlock"><h3>將結果分享至：</h3><div class="shareRow"><div class="shareRow"><button class="iconBtn" id="shareLine" aria-label="Share to LINE"><img src="https://static.wixstatic.com/media/ba9378_76e7805d6e5a47f9b75b99d452aa89ba~mv2.png" alt="LINE" /></button><button class="iconBtn" id="shareFB" aria-label="Share to Facebook"><img src="https://static.wixstatic.com/media/ba9378_3bc563ef22974bd4adb473284cc8ca1a~mv2.png" alt="Facebook" /></button><button class="iconBtn" id="shareThreads" aria-label="Share to Threads"><img src="https://static.wixstatic.com/media/ba9378_f4fc9178433844e99014caf2d63bfe8e~mv2.png" alt="Threads" /></button><button class="iconBtn" id="exportBtn" aria-label="Export Image"><img src="https://static.wixstatic.com/media/ba9378_19383ab5b1ff4165915f6b0c4a358d8d~mv2.png" alt="匯出圖片" /></button></div></div></div>
 <!-- Mobile Share Sheet (only for FB) -->
@@ -330,10 +366,7 @@
     </div>
 
     <div class="center" style="margin-top:18px">
-      <div class="promo">
-        <strong>我們是 旅行優先 TRAVEL FIRST —— 帶著小旅伴，一起旅行！</strong>
-        <a class="btn" id="ytBtn" href="https://www.youtube.com/c/TRAVELFIRST" target="_blank" rel="noopener">馬上觀看旅行優先頻道</a>
-      </div>
+      <div class="promo"></div>
     </div>
   </div>
 
@@ -825,9 +858,9 @@ const resultImages = {
   "卡邦-INTP": "https://static.wixstatic.com/media/ba9378_8d609f5a3121400fbdedfe4da5b47431~mv2.png",
   "卡邦-ESFJ": "https://static.wixstatic.com/media/ba9378_72cb26ab0d6942fb92863ff4db4ce566~mv2.png",
 
-  "卡美拉-INFJ": "https://static.wixstatic.com/media/ba9378_2d22484cd7334bc4b0a9645f852619c5~mv2.png",
-  "卡美拉-ESFP": "https://static.wixstatic.com/media/ba9378_4e1ab1302a86413ab87cb4434c73c1a7~mv2.png",
-  "卡美拉-ENFJ": "https://static.wixstatic.com/media/ba9378_a75f3860d7144eacaf7b62487f0cddac~mv2.png",
+  "卡美拉-INFJ": "https://static.wixstatic.com/media/ba9378_adf26a7c48ff454ca3dea92ee977142d~mv2.png",
+  "卡美拉-ESFP": "https://static.wixstatic.com/media/ba9378_237a12946f9c45f99700671107ee6c17~mv2.png",
+  "卡美拉-ENFJ": "https://static.wixstatic.com/media/ba9378_e091594e0030442daf0d228af879f004~mv2.png",
 
   "皮羅-ISFP": "https://static.wixstatic.com/media/ba9378_5fa76fafd7754c9a85fad5c128f5bde1~mv2.png",
   "皮羅-INFP": "https://static.wixstatic.com/media/ba9378_5d0a4e8b84724615910db4e3a033770c~mv2.png",
@@ -1509,6 +1542,273 @@ document.getElementById("shareThreads").onclick=()=>window.open(`https://www.thr
       console.error('[FB copy share]', e);
     }
   }, true);
+})();
+</script>
+
+
+<!-- === Giveaway Speed Dial (floating) — scoped === -->
+<style>
+  :root{ --tf-gw-right: clamp(20px,3vw,40px); --tf-gw-gap: 62px; --tf-gw-bottom: calc(18vh + env(safe-area-inset-bottom,0px)); }
+  .tf-gw-wrap{ position:fixed; right:var(--tf-gw-right); bottom:var(--tf-gw-bottom); z-index:99999; }
+  .tf-gw-wrap.open{ padding-top: calc(var(--tf-gw-gap) * 3); }
+  .tf-gw-hide{ display:none !important; }
+
+  /* base button sizes */
+  .tf-gw-btn,.tf-gw-item{
+    width:56px; height:56px; border-radius:50%;
+    display:grid; place-items:center; text-decoration:none;
+    box-shadow:0 8px 22px rgba(0,0,0,.25); cursor:pointer;
+    touch-action:manipulation; -webkit-tap-highlight-color: rgba(0,0,0,0);
+    border:0;
+  }
+  /* platform buttons: keep circular + full-bleed */
+  .tf-gw-item{ background:transparent; overflow:hidden; }
+  .tf-gw-item .tf-gw__icon{ width:100%; height:100%; border-radius:50%; overflow:hidden; display:block; }
+  .tf-gw-item .tf-gw__img{ width:100%; height:100%; display:block; object-fit:cover; }
+
+  /* main button: square, no shadow, image 100% */
+  .tf-gw-btn{ box-shadow:none; background:transparent; overflow:visible; }
+  .tf-gw-btn .tf-gw__icon{ width:100%; height:100%; border-radius:0; overflow:visible; display:block; }
+  .tf-gw-btn .tf-gw__img{ width:100%; height:100%; display:block; object-fit:contain; }
+
+  /* bubble at LEFT of icon */
+  .tf-gw__bubble{
+    position:absolute; right:66px; bottom:50%; transform:translateY(50%) translateX(6px);
+    background:#fff; color:#111; padding:8px 12px; border-radius:12px; box-shadow:0 8px 22px rgba(0,0,0,.15);
+    font-size:13px; line-height:1.4; max-width:min(68vw, 280px); opacity:0; pointer-events:none; transition:.2s;
+    white-space:normal; word-break:keep-all; text-wrap:balance; letter-spacing:.2px; text-align:left;
+  }
+  .tf-gw-wrap.show .tf-gw__bubble{ opacity:1; transform:translateY(50%) translateX(0); }
+  .tf-gw__bubble::after{ content:""; position:absolute; right:-7px; bottom:calc(50% - 7px);
+    border:7px solid transparent; border-left-color:#fff; }
+
+  .tf-gw-menu{ position:absolute; right:0; bottom:0; }
+  .tf-gw-item{
+    position:absolute; right:0; bottom:0;
+    transform:translateY(0) scale(.6); opacity:0; pointer-events:none;
+    transition:transform .25s ease, opacity .2s ease;
+  }
+  .tf-gw-item::after{
+    content:attr(data-label); position:absolute; right:66px; bottom:50%; transform:translateY(50%) translateX(6px);
+    background:#fff; color:#111; padding:6px 10px; border-radius:10px; box-shadow:0 8px 22px rgba(0,0,0,.12);
+    font-size:12px; white-space:nowrap; opacity:0; transition:.2s; pointer-events:none;
+  }
+  .tf-gw-wrap.open .tf-gw-item{ opacity:1; pointer-events:auto; transform:translateY(calc(var(--i) * var(--tf-gw-gap) * -1)) scale(1); }
+  .tf-gw-wrap.open .tf-gw-item:hover::after{ opacity:1; transform:translateY(50%) translateX(0); }
+
+  @media (max-width:480px){
+    .tf-gw-btn,.tf-gw-item{ width:52px; height:52px; }
+  }
+
+/* === GW: keep main gift visible; upward fan menu === */
+.tf-gw-wrap{ position:fixed; z-index:99999; }
+.tf-gw-wrap .tf-gw-btn{ opacity:1; visibility:visible; }
+.tf-gw-wrap.open .tf-gw-btn{ opacity:1; visibility:visible; } /* keep visible when open */
+
+/* layout: stack items upward from main button */
+.tf-gw-wrap .tf-gw-menu{ position:relative; width:56px; height:0; }
+.tf-gw-wrap .tf-gw-item{ position:absolute; left:0; bottom:0; transform: translateY(0) scale(.9); opacity:0; pointer-events:none; transition: transform .28s ease, opacity .18s ease; }
+.tf-gw-wrap.open .tf-gw-item{ opacity:1; pointer-events:auto; }
+.tf-gw-wrap .tf-gw-item[style*="--i:1"]{ transform: translateY(calc(-1 * var(--tf-gw-gap, 62px))) scale(.98); }
+.tf-gw-wrap .tf-gw-item[style*="--i:2"]{ transform: translateY(calc(-2 * var(--tf-gw-gap, 62px))) scale(.98); }
+.tf-gw-wrap .tf-gw-item[style*="--i:3"]{ transform: translateY(calc(-3 * var(--tf-gw-gap, 62px))) scale(.98); }
+
+/* closed state resets */
+.tf-gw-wrap:not(.open) .tf-gw-item{ transform: translateY(0) scale(.9); opacity:0; pointer-events:none; }
+</style>
+
+<div class="tf-gw-wrap tf-gw-hide" id="tf-gw">
+  <!-- 主鈕 -->
+  <button class="tf-gw-btn" type="button" aria-label="抽獎平台選單" aria-expanded="false">
+    <span class="tf-gw__icon" aria-hidden="true">
+      <img class="tf-gw__img tf-gw__img--main" alt="" src="https://static.wixstatic.com/media/ba9378_fc3f770d907d4e57aca99437e053e6f4~mv2.png">
+    </span>
+    <span class="tf-gw__bubble" role="status"><span class="tf-gw__bubble-line1">抽獎活動</span></span>
+  </button><!-- 平台子鈕 -->
+  <div class="tf-gw-menu" aria-hidden="true">
+    <a class="tf-gw-item" style="--i:1" data-label="Facebook 抽獎"
+       href="https://www.facebook.com/share/p/1BUufWXvEx/" target="_blank" rel="noopener" aria-label="Facebook 抽獎">
+      <span class="tf-gw__icon" aria-hidden="true">
+        <img class="tf-gw__img" alt="" src="https://static.wixstatic.com/media/ba9378_60b997a07a2e40ce8a78386d880cb071~mv2.png">
+      </span>
+    </a>
+
+    <a class="tf-gw-item" style="--i:2" data-label="Threads 抽獎"
+       href="https://www.threads.com/@travelfirst0101/post/DPlwHAIkxmv?xmt=AQF0W8e0jKsBkU0t6ROJ277kSq_FmuHWZHt0XT97r4uurg"
+       target="_blank" rel="noopener" aria-label="Threads 抽獎">
+      <span class="tf-gw__icon" aria-hidden="true">
+        <img class="tf-gw__img" alt="" src="https://static.wixstatic.com/media/ba9378_f9324c48806b40e19c0ba8a6f1522b55~mv2.png">
+      </span>
+    </a>
+  
+
+  
+  <a style="--i:3" class="tf-gw-item tf-gw-item--ig" href="https://www.instagram.com/p/DPlwGR7E-iL/" target="_blank" rel="noopener" aria-label="前往 Instagram 抽獎貼文">
+    <img class="tf-gw__img" src="https://static.wixstatic.com/media/ba9378_8b2dfd925ddc48f49794a5e73ff46229~mv2.png" alt="" />
+  </a>
+</div>
+</div>
+
+<script>
+(()=>{
+  const wrap = document.getElementById('tf-gw');
+  if(!wrap) return;
+  const btn  = wrap.querySelector('.tf-gw-btn');
+  const menu = wrap.querySelector('.tf-gw-menu');
+
+  function openMenu(v){
+    wrap.classList.toggle('open', !!v);
+    btn.setAttribute('aria-expanded', v ? 'true' : 'false');
+    menu.setAttribute('aria-hidden', v ? 'false' : 'true');
+    if(v){ wrap.classList.remove('show'); } else { wrap.classList.add('show'); }
+  }
+  btn.addEventListener('click', (e)=>{ e.stopPropagation(); openMenu(!wrap.classList.contains('open')); });
+
+  const isTouch = matchMedia('(hover: none)').matches;
+  if(!isTouch){
+    let closeTimer=null;
+    wrap.addEventListener('mouseenter', ()=>{ if(closeTimer){clearTimeout(closeTimer); closeTimer=null;} openMenu(true); });
+    wrap.addEventListener('mouseleave', ()=>{ closeTimer=setTimeout(()=>openMenu(false), 400); });
+  }
+  document.addEventListener('click', (e)=>{ if(!wrap.contains(e.target)) openMenu(false); });
+  document.addEventListener('keydown', (e)=>{ if(e.key==='Escape') openMenu(false); });
+
+  // 只在首頁(前言)與結果頁顯示；作答/載入隱藏
+  const intro   = document.getElementById('intro');
+  const quiz    = document.getElementById('quiz');
+  const loading = document.getElementById('loading');
+  const result  = document.getElementById('result');
+
+  function isShown(el){
+    if(!el) return false;
+    const style = window.getComputedStyle(el);
+    return style.display!=='none' && style.visibility!=='hidden' && style.opacity!=='0';
+  }
+  function updateVisible(){
+    const onIntro  = isShown(intro);
+    const onResult = isShown(result) || (result && result.classList.contains('show'));
+    const onQuiz   = isShown(quiz) || isShown(loading);
+    const show = (onIntro || onResult) && !onQuiz;
+    wrap.classList.toggle('tf-gw-hide', !show);
+    if(show && !wrap.classList.contains('open')) wrap.classList.add('show');
+  }
+  const obsCfg={attributes:true, attributeFilter:['style','class']};
+  [intro,quiz,loading,result].forEach(el=>{ if(el){ new MutationObserver(updateVisible).observe(el, obsCfg); } });
+  window.addEventListener('load', updateVisible);
+  document.addEventListener('DOMContentLoaded', updateVisible);
+  setInterval(updateVisible, 800);
+})();
+</script>
+<!-- === /Giveaway Speed Dial === -->
+
+
+<script>
+/*GIVEAWAY_DELEGATED_V1*/
+(function(){
+  function fallbackCopy(text){
+    try{ 
+      var ta=document.createElement('textarea');
+      ta.value=text; ta.style.position='fixed'; ta.style.left='-9999px';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      document.execCommand('copy');
+      document.body.removeChild(ta);
+      return true;
+    }catch(e){ console.error('[giveaway copy fallback]', e); return false; }
+  }
+  document.addEventListener('click', function(ev){
+    var t = ev.target;
+    if(!t) return;
+    var btn = (t.id==='shareGiveawayBtn') ? t : (t.closest ? t.closest('#shareGiveawayBtn') : null);
+    if(!btn) return;
+    ev.preventDefault(); ev.stopImmediatePropagation();
+    try{
+      var text = (typeof shareText==='function') ? shareText() : (function(){
+        var titleEl = document.getElementById('title');
+        var t = titleEl && titleEl.textContent ? titleEl.textContent.trim() : '';
+        var u = (typeof shareUrl!=='undefined') ? shareUrl : (location.href||'').split('#')[0];
+        return '我的旅行人格是「'+ t +'」！你是哪種小旅伴呢？適合和你一起旅行的小旅伴是誰呢？趕快來測試看看吧！ ' + u;
+      })();
+      var done = false;
+      if(navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(function(){ done = true; alert('已複製到剪貼簿，請至抽獎貼文下方貼上留言，並且@兩位你想一起旅行的朋友'); })
+        .catch(function(){ done = fallbackCopy(text); alert('已複製到剪貼簿，請至抽獎貼文下方貼上留言，並且@兩位你想一起旅行的朋友'); });
+      }else{
+        done = fallbackCopy(text);
+        alert('已複製到剪貼簿，請至抽獎貼文下方貼上留言，並且@兩位你想一起旅行的朋友');
+      }
+    }catch(e){
+      console.error('[giveaway share]', e);
+      alert('無法複製內容，請手動複製貼上至抽獎貼文。');
+    }
+  }, true);
+})();
+</script>
+
+
+<script>
+// === GW toggle: keep gift visible; open upward; click outside to close ===
+(function(){
+  var wrap = document.getElementById('tf-gw');
+  if(!wrap){ return; }
+  var main = wrap.querySelector('.tf-gw-btn');
+  function open(){ wrap.classList.add('open'); }
+  function close(){ wrap.classList.remove('open'); }
+  function toggle(){ wrap.classList.toggle('open'); }
+
+  // Ensure existing handlers don't hide the main button
+  if(main){
+    // Clear inline onclick that might replace/hide
+    try{ main.removeAttribute('onclick'); }catch(e){}
+    main.addEventListener('click', function(ev){
+      ev.preventDefault(); ev.stopImmediatePropagation();
+      toggle();
+    }, true);
+  }
+
+  // Click outside to close
+  document.addEventListener('click', function(ev){
+    if(!wrap.classList.contains('open')) return;
+    var t = ev.target;
+    var inside = wrap.contains(t);
+    if(!inside){ close(); }
+  }, true);
+
+  // Escape key closes
+  document.addEventListener('keydown', function(ev){
+    if(ev.key === 'Escape'){ close(); }
+  }, true);
+})();
+</script>
+
+
+<script>
+/*NEXT_LABEL_PATCH*/
+(function(){
+  try{
+    function updateNextLabel(){
+      try{
+        var btn = document.getElementById('nextBtn');
+        if(!btn) return;
+        if(typeof idx==='undefined' || typeof qData==='undefined'){ return; }
+        btn.textContent = (idx >= (qData.length - 1)) ? '觀看結果' : '下一題';
+      }catch(e){}
+    }
+    // Wrap renderQuestion to refresh label after each render
+    if(typeof window.renderQuestion === 'function'){
+      var __rq = window.renderQuestion;
+      window.renderQuestion = function(){
+        var ret = __rq.apply(this, arguments);
+        updateNextLabel();
+        return ret;
+      };
+    }
+    // Also update once after DOM is ready (in case already on a question)
+    if(document.readyState === 'loading'){
+      document.addEventListener('DOMContentLoaded', updateNextLabel);
+    }else{
+      updateNextLabel();
+    }
+  }catch(e){}
 })();
 </script>
 
